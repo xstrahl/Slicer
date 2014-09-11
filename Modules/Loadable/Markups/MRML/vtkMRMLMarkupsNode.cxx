@@ -467,10 +467,12 @@ void vtkMRMLMarkupsNode::AddMarkup(Markup markup)
   this->Markups.push_back(markup);
   this->MaximumNumberOfMarkups++;
 
+  int markupIndex = this->GetNumberOfMarkups() - 1;
+
   this->Modified();
   if (!this->GetDisableModifiedEvent())
     {
-    this->InvokeEvent(vtkMRMLMarkupsNode::MarkupAddedEvent);
+    this->InvokeEvent(vtkMRMLMarkupsNode::MarkupAddedEvent, (void*)&markupIndex);
     }
 }
 
@@ -669,7 +671,7 @@ bool vtkMRMLMarkupsNode::InsertMarkup(Markup m, int targetIndex)
   this->Modified();
   if (!this->GetDisableModifiedEvent())
     {
-    this->InvokeEvent(vtkMRMLMarkupsNode::MarkupAddedEvent);
+    this->InvokeEvent(vtkMRMLMarkupsNode::MarkupAddedEvent, (void*)&targetIndex);
     }
 
   return true;
