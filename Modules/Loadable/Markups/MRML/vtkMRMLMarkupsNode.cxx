@@ -462,7 +462,7 @@ void vtkMRMLMarkupsNode::InitMarkup(Markup *markup)
 }
 
 //-----------------------------------------------------------
-void vtkMRMLMarkupsNode::AddMarkup(Markup markup)
+int vtkMRMLMarkupsNode::AddMarkup(Markup markup)
 {
   this->Markups.push_back(markup);
   this->MaximumNumberOfMarkups++;
@@ -474,6 +474,7 @@ void vtkMRMLMarkupsNode::AddMarkup(Markup markup)
     {
     this->InvokeEvent(vtkMRMLMarkupsNode::MarkupAddedEvent, (void*)&markupIndex);
     }
+  return markupIndex;
 }
 
 //-----------------------------------------------------------
