@@ -78,7 +78,6 @@ set(${CMAKE_PROJECT_NAME}_ITK_COMPONENTS
   ITKTransform
   ITKV3Compatibility
   ITKVTK
-  ITKVtkGlue
   ITKZLIB
   ${ITK_IO_MODULES_USED}
   )
