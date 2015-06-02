@@ -42,8 +42,8 @@
 #include "vtkMRMLColorLogic.h"
 
 // SubjectHierarchy Plugins includes
-#include "qSlicerSubjectHierarchyPluginHandler.h"
-#include "qSlicerSubjectHierarchyModelsPlugin.h"
+//#include "qSlicerSubjectHierarchyPluginHandler.h"
+//#include "qSlicerSubjectHierarchyModelsPlugin.h"
 
 //-----------------------------------------------------------------------------
 Q_EXPORT_PLUGIN2(qSlicerModelsModule, qSlicerModelsModule);
@@ -166,7 +166,7 @@ void qSlicerModelsModule::setup()
     }
 
   // Register Subject Hierarchy core plugins
-  qSlicerSubjectHierarchyPluginHandler::instance()->registerPlugin(new qSlicerSubjectHierarchyModelsPlugin());
+  //qSlicerSubjectHierarchyPluginHandler::instance()->registerPlugin(new qSlicerSubjectHierarchyModelsPlugin());
 }
 
 //-----------------------------------------------------------------------------

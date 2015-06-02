@@ -42,8 +42,8 @@
 #include <vtkMRMLScene.h>
 
 // SubjectHierarchy Plugins includes
-#include "qSlicerSubjectHierarchyPluginHandler.h"
-#include "qSlicerSubjectHierarchyVolumesPlugin.h"
+//#include "qSlicerSubjectHierarchyPluginHandler.h"
+//#include "qSlicerSubjectHierarchyVolumesPlugin.h"
 
 
 //-----------------------------------------------------------------------------
@@ -152,7 +152,7 @@ void qSlicerVolumesModule::setup()
     QStringList() << "vtkMRMLVolumeNode", this));
 
   // Register Subject Hierarchy core plugins
-  qSlicerSubjectHierarchyPluginHandler::instance()->registerPlugin(new qSlicerSubjectHierarchyVolumesPlugin());
+  //qSlicerSubjectHierarchyPluginHandler::instance()->registerPlugin(new qSlicerSubjectHierarchyVolumesPlugin());
 }
 
 //-----------------------------------------------------------------------------

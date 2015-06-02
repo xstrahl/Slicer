@@ -5,31 +5,31 @@ set(KIT ${PROJECT_NAME})
 set(${KIT}_EXPORT_DIRECTIVE "Q_SLICER_MODULE_${MODULE_NAME_UPPER}_WIDGETS_EXPORT")
 
 set(${KIT}_INCLUDE_DIRECTORIES
-  ${qSlicerSubjectHierarchyModuleWidgets_INCLUDE_DIRS}
-  ${vtkSlicerSubjectHierarchyModuleMRML_INCLUDE_DIRS}
+  #${qSlicerSubjectHierarchyModuleWidgets_INCLUDE_DIRS}
+  #${vtkSlicerSubjectHierarchyModuleMRML_INCLUDE_DIRS}
   ${vtkSlicerDICOMLibModuleLogic_INCLUDE_DIRS}
   )
 
 set(${KIT}_SRCS
-  qSlicerDICOMExportDialog.cxx
-  qSlicerDICOMExportDialog.h
+  #qSlicerDICOMExportDialog.cxx
+  #qSlicerDICOMExportDialog.h
   qSlicerDICOMLoadable.cxx
   qSlicerDICOMLoadable.h
   qSlicerDICOMExportable.cxx
   qSlicerDICOMExportable.h
-  qSlicerDICOMTagEditorWidget.cxx
-  qSlicerDICOMTagEditorWidget.h
+  #qSlicerDICOMTagEditorWidget.cxx
+  #qSlicerDICOMTagEditorWidget.h
   )
 
 set(${KIT}_MOC_SRCS
-  qSlicerDICOMExportDialog.h
+  #qSlicerDICOMExportDialog.h
   qSlicerDICOMLoadable.h
   qSlicerDICOMExportable.h
-  qSlicerDICOMTagEditorWidget.h
+  #qSlicerDICOMTagEditorWidget.h
   )
 
 set(${KIT}_UI_SRCS
-  Resources/UI/qSlicerDICOMExportDialog.ui
+  #Resources/UI/qSlicerDICOMExportDialog.ui
   )
 
 set(${KIT}_RESOURCES
@@ -40,8 +40,8 @@ set(${KIT}_RESOURCES
 SET (${KIT}_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "" FORCE)
 
 set(${KIT}_TARGET_LIBRARIES
-  qSlicerSubjectHierarchyModuleWidgets
-  vtkSlicerSubjectHierarchyModuleMRML
+  #qSlicerSubjectHierarchyModuleWidgets
+  #vtkSlicerSubjectHierarchyModuleMRML
   vtkSlicerDICOMLibModuleLogic
   MRMLCore
   MRMLLogic
@@ -67,4 +67,4 @@ if(BUILD_TESTING)
 endif()
 
 #-----------------------------------------------------------------------------
-add_subdirectory(DesignerPlugins)
+#add_subdirectory(DesignerPlugins)

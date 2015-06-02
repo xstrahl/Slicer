@@ -6,7 +6,7 @@ set(qtmodules
   Cameras
   Units
   Colors
-  SubjectHierarchy
+  #SubjectHierarchy
   Transforms
   Annotations
   Data
