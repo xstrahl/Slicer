@@ -1113,7 +1113,8 @@ class SliceAnnotations(VTKObservationMixin):
 
       self.drawCornerAnnotations()
 
-  def updateScalarBarRange(self, sliceLogic, volumeNode, scalarBar, selectedLayer):
+  @staticmethod
+  def updateScalarBarRange(sliceLogic, volumeNode, scalarBar, selectedLayer):
     vdn = volumeNode.GetDisplayNode()
     if vdn:
       vcn = vdn.GetColorNode()
@@ -1211,7 +1212,8 @@ class SliceAnnotations(VTKObservationMixin):
          self.cornerTexts[3]['6-TR']['text']  = 'TR ' + dicomDic['Repetition Time']
          self.cornerTexts[3]['7-TE']['text'] = 'TE ' + dicomDic['Echo Time']
 
-  def makePatientInfo(self,dicomDic):
+  @staticmethod
+  def makePatientInfo(dicomDic):
     # This will give an string of patient's birth date,
     # patient's age and sex
     patientInfo = dicomDic['Patient Birth Date'
@@ -1219,7 +1221,8 @@ class SliceAnnotations(VTKObservationMixin):
               ] + ', ' + dicomDic['Patient Sex']
     return patientInfo
 
-  def formatDICOMDate(self, date):
+  @staticmethod
+  def formatDICOMDate(date):
     standardDate = ''
     if date != '':
       date = date.rstrip()
@@ -1227,7 +1230,8 @@ class SliceAnnotations(VTKObservationMixin):
       standardDate = date[:4] + '-' + date[4:6]+ '-' + date[6:]
     return standardDate
 
-  def formatDICOMTime(self, time):
+  @staticmethod
+  def formatDICOMTime(time):
     if time == '':
       # time field is empty
       return ''
@@ -1242,7 +1246,8 @@ class SliceAnnotations(VTKObservationMixin):
     studyS = time[4:6]
     return studyH + ':' + studyM  + ':' + studyS +clockTime
 
-  def fitText(self,text,textSize):
+  @staticmethod
+  def fitText(text,textSize):
     if len(text) > textSize:
       preSize = int(textSize/2)
       postSize = preSize - 3
@@ -1291,7 +1296,8 @@ class SliceAnnotations(VTKObservationMixin):
       for key in cornerText.keys():
         self.cornerTexts[i][key]['text'] = ''
 
-  def extractDICOMValues(self,uid):
+  @staticmethod
+  def extractDICOMValues(uid):
     p ={}
     tags = {
     "0008,0021": "Series Date",
