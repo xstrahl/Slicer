@@ -89,8 +89,6 @@ class SliceAnnotations(VTKObservationMixin):
     self.humanActor = None
 
     # If there are no user settings load defaults
-    settings = qt.QSettings()
-
     self.sliceViewAnnotationsEnabled = settingsValue('DataProbe/sliceViewAnnotations.enabled', 1, converter=int)
 
     self.bottomLeft = settingsValue('DataProbe/sliceViewAnnotations.bottomLeft', 1, converter=int)
@@ -508,7 +506,7 @@ class SliceAnnotations(VTKObservationMixin):
         self.sliceCornerAnnotations[sliceViewName].SetText(3, "")
         self.sliceViews[sliceViewName].scheduleRender()
 
-      # reset golobal variables
+      # reset global variables
       self.sliceCornerAnnotations = {}
 
   def createGlobalVariables(self):
@@ -541,7 +539,6 @@ class SliceAnnotations(VTKObservationMixin):
     sliceView = sliceWidget.sliceView()
 
     renderWindow = sliceView.renderWindow()
-    renderWindow.GetRenderers()
     renderer = renderWindow.GetRenderers().GetItemAsObject(0)
     self.renderers[sliceViewName] = renderer
 
@@ -555,7 +552,6 @@ class SliceAnnotations(VTKObservationMixin):
   def createActors(self, sliceViewName):
     sliceWidget = self.layoutManager.sliceWidget(sliceViewName)
     self.sliceWidgets[sliceViewName] = sliceWidget
-    sliceView = sliceWidget.sliceView()
 
     self.rulerTextActors[sliceViewName] = vtk.vtkTextActor()
     textActor = self.rulerTextActors[sliceViewName]
@@ -613,8 +609,6 @@ class SliceAnnotations(VTKObservationMixin):
     actor.SetMapper(mapper)
     # color actor
     actor.GetProperty().SetLineWidth(1)
-    textActor = self.rulerTextActors[sliceViewName]
-    textProperty = textActor.GetTextProperty()
 
   def createScalarBar(self, sliceViewName):
     if self.hasVTKPVScalarBarActor:
@@ -900,13 +894,11 @@ class SliceAnnotations(VTKObservationMixin):
       #
       self.minimumWidthForRuler = 200
       viewWidth = self.sliceViews[sliceViewName].width
-      viewHeight = self.sliceViews[sliceViewName].height
 
       rasToXY = vtk.vtkMatrix4x4()
       m = sliceNode.GetXYToRAS()
       rasToXY.DeepCopy(m)
       rasToXY.Invert()
-      scalingFactorString = " mm"
 
       # TODO: The current logic only supports rulers from 1mm to 10cm
       # add support for other ranges.
@@ -1000,8 +992,8 @@ class SliceAnnotations(VTKObservationMixin):
       renderer.SetLayer(0)
       if orientationRenderer != None:
         orientationRenderer.SetLayer(1)
-      renderWindow = renderer.GetRenderWindow()
-      interactor = renderWindow.GetInteractor()
+      #renderWindow = renderer.GetRenderWindow()
+      #interactor = renderWindow.GetInteractor()
 
       # create the scalarBarWidget
       #scalarBarWidget = self.scalarBarWidgets[sliceViewName]
@@ -1055,7 +1047,6 @@ class SliceAnnotations(VTKObservationMixin):
     sliceViewName = sliceNode.GetLayoutName()
     self.currentSliceViewName = sliceViewName
 
-    renderer = self.renderers[sliceViewName]
     if self.sliceViews[sliceViewName]:
       #
       # Update slice corner annotations
@@ -1265,7 +1256,6 @@ class SliceAnnotations(VTKObservationMixin):
     # adjust maximum text length based on fontsize and view width
     viewWidth = self.sliceViews[self.currentSliceViewName].width
     self.maximumTextLength = int((viewWidth - 40) / self.fontSize)
-    cornerAnnotation = ''
 
     for i, cornerText in enumerate(self.cornerTexts):
       keys = sorted(cornerText.keys())
