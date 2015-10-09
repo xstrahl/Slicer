@@ -441,17 +441,6 @@ class SliceAnnotations(VTKObservationMixin):
     for slider in [self.zoomSlider,self.widthSlider, self.heightSlider]:
       slider.enabled = self.orientationMarkerEnableCheckBox.checked
 
-    for sliceViewName in self.sliceViewNames:
-      cornerAnnotation = self.sliceCornerAnnotations[sliceViewName]
-      cornerAnnotation.SetMaximumFontSize(self.fontSize)
-      cornerAnnotation.SetMinimumFontSize(self.fontSize)
-      cornerAnnotation.SetNonlinearFontScaleFactor(1)
-      textProperty = cornerAnnotation.GetTextProperty()
-      if self.fontFamily == 'Times':
-        textProperty.SetFontFamilyToTimes()
-      else:
-        textProperty.SetFontFamilyToArial()
-
     # Updating Annotations Amount
     if self.level1RadioButton.checked:
       self.annotationsDisplayAmount = 0
@@ -477,16 +466,7 @@ class SliceAnnotations(VTKObservationMixin):
       self.updateRuler(sl)
       self.updateScalarBar(sl)
       self.updateOrientationMarker(sl)
-
-      if enabled:
-        self.makeAnnotationText(sl)
-      else:
-        # Clear Annotations
-        self.sliceCornerAnnotations[sliceViewName].SetText(0, "")
-        self.sliceCornerAnnotations[sliceViewName].SetText(1, "")
-        self.sliceCornerAnnotations[sliceViewName].SetText(2, "")
-        self.sliceCornerAnnotations[sliceViewName].SetText(3, "")
-        self.sliceViews[sliceViewName].scheduleRender()
+      self.updateCornerAnnotation(sl)
 
     if not enabled:
       # reset global variables
@@ -628,6 +608,32 @@ class SliceAnnotations(VTKObservationMixin):
     self.updateRuler(caller)
     self.updateScalarBar(caller)
     self.updateOrientationMarker(caller)
+
+  def updateCornerAnnotation(self, sliceLogic):
+
+    sliceNode = sliceLogic.GetBackgroundLayer().GetSliceNode()
+    sliceViewName = sliceNode.GetLayoutName()
+
+    enabled = self.sliceViewAnnotationsEnabled
+
+    cornerAnnotation = self.sliceCornerAnnotations[sliceViewName]
+
+    if enabled:
+      # Font
+      cornerAnnotation.SetMaximumFontSize(self.fontSize)
+      cornerAnnotation.SetMinimumFontSize(self.fontSize)
+      cornerAnnotation.SetNonlinearFontScaleFactor(1)
+      textProperty = cornerAnnotation.GetTextProperty()
+      if self.fontFamily == 'Times':
+        textProperty.SetFontFamilyToTimes()
+      else:
+        textProperty.SetFontFamilyToArial()
+      # Text
+      self.makeAnnotationText(sliceLogic)
+    else:
+      # Clear Annotations
+      for position in range(3):
+        cornerAnnotation.SetText(position, "")
 
   def updateOrientationMarker(self, sliceLogic):
     sliceNode = sliceLogic.GetBackgroundLayer().GetSliceNode()
