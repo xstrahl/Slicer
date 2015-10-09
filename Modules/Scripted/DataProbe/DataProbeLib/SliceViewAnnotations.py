@@ -488,10 +488,7 @@ class SliceAnnotations(VTKObservationMixin):
 
   def createCornerAnnotations(self):
     self.createGlobalVariables()
-    sliceViewNames = self.layoutManager.sliceViewNames()
-
-    for sliceViewName in sliceViewNames:
-      self.sliceViewNames.append(sliceViewName)
+    self.sliceViewNames = self.layoutManager.sliceViewNames()
     for sliceViewName in self.sliceViewNames:
       self.addSliceViewObserver(sliceViewName)
       self.createActors(sliceViewName)
