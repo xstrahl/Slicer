@@ -99,7 +99,10 @@ class EditBox(VTKObservationMixin):
 
   def onInteractionModeChanged(self, caller, event):
     if caller.IsA('vtkMRMLInteractionNode'):
-      if caller.GetCurrentInteractionMode() != caller.ViewTransform:
+      if caller.GetCurrentInteractionMode() != caller.ViewTransform\
+              and self.currentEffect != 'VolumeClipWithModelEffect':
+        # XXX Editor effect infrastructure should be generalized to allow
+        #     effect to use Markups.
         self.defaultEffect()
 
   def _onParameterNodeModified(self, caller, event=-1):
