@@ -34,7 +34,9 @@ if(NOT DEFINED DCMTK_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(${proj}_REPOSITORY ${git_protocol}://github.com/commontk/DCMTK.git)
-  set(${proj}_GIT_TAG "ade7e936e362ba219df0e982d07807c6c7b73881") # DCMTK-3.6.1_20150924 + patch for Clang 3.1 build error
+  # DCMTK-3.6.1_20150924 + patches.
+  # See https://github.com/commontk/DCMTK/compare/ade7e93...412670b
+  set(${proj}_GIT_TAG "412670be2ce52cca39f3b07216e10f5666d06989")
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
