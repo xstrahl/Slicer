@@ -46,15 +46,11 @@ if NATIVE_WIN64:
     VSEXPRESS_BASE = r"Software\Wow6432Node\Microsoft\VCExpress\%0.1f"
     WINSDK_BASE = r"Software\Wow6432Node\Microsoft\Microsoft SDKs\Windows"
     NET_BASE = r"Software\Wow6432Node\Microsoft\.NETFramework"
-    VC_SXS_KEY = r"Software\Wow6432Node\Microsoft\VisualStudio\SxS\VC7"
-    VS_SXS_KEY = r"Software\Wow6432Node\Microsoft\VisualStudio\SxS\VS7"
 else:
     VS_BASE = r"Software\Microsoft\VisualStudio\%0.1f"
     VSEXPRESS_BASE = r"Software\Microsoft\VCExpress\%0.1f"
     WINSDK_BASE = r"Software\Microsoft\Microsoft SDKs\Windows"
     NET_BASE = r"Software\Microsoft\.NETFramework"
-    VC_SXS_KEY = r"Software\Microsoft\VisualStudio\SxS\VC7"
-    VS_SXS_KEY = r"Software\Microsoft\VisualStudio\SxS\VS7"
 
 # A map keyed by get_platform() return values to values accepted by
 # 'vcvarsall.bat'.  Note a cross-compile may combine these (eg, 'x86_amd64' is
@@ -63,26 +59,6 @@ PLAT_TO_VCVARS = {
     'win32' : 'x86',
     'win-amd64' : 'amd64',
     'win-ia64' : 'ia64',
-}
-
-# Add the first found value of InstallationFolder from this list of
-# keys to %PATH%
-KEY_BASE = r"Software\Microsoft\\"
-WINSDK_KEYS = [KEY_BASE + "Microsoft SDKs\\Windows\\" + rest for rest in (
-    r"v%s",
-    r"v%sA"
-)]
-
-# A map from VC version to Windows SDK version, to be used as the format
-# parameter for each element of WINSDK_KEYS.
-# See the following page for more details:
-#  - http://en.wikipedia.org/wiki/Microsoft_Windows_SDK#Versions
-#  - http://en.wikipedia.org/wiki/Microsoft_Visual_Studio#History
-WINSDK_VERSION_MAP = {
-    '9.0': ['6.0', '7.0'],  # VS2008
-    '10.0': ['7.0', '7.1'], # VS2010
-    '11.0': ['7.1', '8.0', '8.1'], # VS2012
-    '12.0': ['7.1', '8.0', '8.1'], # VS2013
 }
 
 class Reg:
@@ -240,13 +216,17 @@ def removeDuplicates(variable):
     newVariable = os.pathsep.join(newList)
     return newVariable
 
-# deprecated
 def find_vcvarsall(version):
     """Find the vcvarsall.bat file
 
     At first it tries to find the productdir of VS 2008 in the registry. If
     that fails it falls back to the VS90COMNTOOLS env var.
     """
+    import msvc
+    vcvars = msvc.msvc9_find_vcvarsall(version)
+    if vcvars is not None:
+        return vcvars
+
     vsbase = VS_BASE % version
     try:
         productdir = Reg.get_value(r"%s\Setup\VC" % vsbase,
@@ -285,138 +265,60 @@ def find_vcvarsall(version):
     log.debug("Unable to find vcvarsall.bat")
     return None
 
-def query_vcvarsall(version, arch="x86"):
+def original_query_vcvarsall(version, arch="x86"):
     """Launch vcvarsall.bat and read the settings from its environment
     """
+    vcvarsall = find_vcvarsall(version)
+    interesting = set(("include", "lib", "libpath", "path"))
+    result = {}
 
-    paths = []
-    includes = []
-    libs = []
+    if vcvarsall is None:
+        raise DistutilsPlatformError("Unable to find vcvarsall.bat")
+    log.debug("Calling 'vcvarsall.bat %s' (version=%s)", arch, version)
+    popen = subprocess.Popen('"%s" %s & set' % (vcvarsall, arch),
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+    try:
+        stdout, stderr = popen.communicate()
+        if popen.wait() != 0:
+            raise DistutilsPlatformError(stderr.decode("mbcs"))
 
-    def _append_if_exists(list_, path):
-        if os.path.isdir(path):
-            list_.append(path)
+        stdout = stdout.decode("mbcs")
+        for line in stdout.split("\n"):
+            line = Reg.convert_mbcs(line)
+            if '=' not in line:
+                continue
+            line = line.strip()
+            key, value = line.split('=', 1)
+            key = key.lower()
+            if key in interesting:
+                if value.endswith(os.pathsep):
+                    value = value[:-1]
+                result[key] = removeDuplicates(value)
 
-    def _add_bin_paths(base, paths):
-        if arch.endswith("ia64"):
-            _append_if_exists(paths, base + r"\bin\ia64")
-        elif arch.endswith("64"):
-            _append_if_exists(paths, base + r"\bin\x64")
-            _append_if_exists(paths, base + r"\bin\amd64")
-        elif arch.endswith("x86"):
-            _append_if_exists(paths, base + r"\bin")
+    finally:
+        popen.stdout.close()
+        popen.stderr.close()
 
-    def _get_include_lib_paths(base):
-        existing_includes = []
-        existing_libs = []
-        _append_if_exists(existing_includes, base + r"\include")
-        if arch.endswith("ia64"):
-            _append_if_exists(existing_libs, base + r"\lib\ia64")
-        elif arch.endswith("64"):
-            _append_if_exists(existing_libs, base + r"\lib\x64")
-            _append_if_exists(existing_libs, base + r"\lib\amd64")
-        elif arch.endswith("x86"):
-            _append_if_exists(existing_libs, base + r"\lib")
-
-        return (existing_includes, existing_libs)
-
-    result = []
-
-    versionstr = '%.1f' % version
-
-    vcpaths = Reg.read_values(_winreg.HKEY_LOCAL_MACHINE, VC_SXS_KEY)
-    vcinstalldir = vcpaths[versionstr]
-    vsinstalldir = Reg.read_values(_winreg.HKEY_LOCAL_MACHINE, VS_SXS_KEY).get(versionstr, vcinstalldir + "..")
-
-    # set PATH to include:
-    #   %VCINSTALLDIR%\bin[\x64|\amd64|\ia64]
-    #   %VCINSTALLDIR%\VCPackages
-
-    if vcinstalldir:
-        _add_bin_paths(vcinstalldir, paths)
-        _append_if_exists(paths, "%s\\VCPackages" % (vcinstalldir))
-
-    # set PATH to include:
-    #   %VSINSTALLDIR%\Common7\IDE
-    #   %VSINSTALLDIR%\Common7\Tools
-    #   %VSINSTALLDIR%\Common7\Tools\bin
-
-    if vsinstalldir:
-        _append_if_exists(paths, "%s\\Common7\\IDE" % (vsinstalldir))
-        _append_if_exists(paths, "%s\\Common7\\Tools" % (vsinstalldir))
-        _append_if_exists(paths, "%s\\Common7\\Tools\\bin" % (vsinstalldir))
-
-    # set PATH to include:
-    #   %FrameworkDir%\%Framework35Version%
-    #   %FrameworkDir%\%FrameworkVersion%
-
-    frameworkdir = vcpaths.get("frameworkdir64" if arch == "amd64" else "frameworkdir32")
-    if frameworkdir:
-        _append_if_exists(paths, frameworkdir + r"\v3.5")
-        frameworkver = vcpaths.get("frameworkver64" if arch == "amd64" else "frameworkdir32")
-        if frameworkver:
-            _append_if_exists(paths, r"%s\%s" % (frameworkdir, frameworkver))
-
-    def _get_sdk_installationfolder(sdkver):
-        for sdkkey in WINSDK_KEYS:
-            try:
-                sdk_install = Reg.get_value(sdkkey % sdkver, "installationfolder")
-            except KeyError:
-                pass
-            else:
-                return sdk_install
-        return None
-
-    sdk_available = False
-
-    for sdkver in WINSDK_VERSION_MAP[versionstr]:
-
-        # set PATH to include:
-        #   %WindowsSdkDir%bin[\x64|\amd64|\ia64]
-        # set INCLUDE to include:
-        #   %WindowsSdkDir%include
-        # and LIB to include
-        #   %WindowsSdkDir%lib[\x64|\amd64|\ia64]
-
-        sdk_install = _get_sdk_installationfolder(sdkver)
-        if sdk_install is not None:
-            (sdk_includes, sdk_libs) = _get_include_lib_paths(sdk_install)
-            sdk_available = len(sdk_includes) > 0 and len(sdk_libs) > 0
-            if sdk_available:
-                _add_bin_paths(sdk_install, paths)
-                includes += sdk_includes
-                libs += sdk_libs
-                print("Windows SDK %s complete" % sdkver)
-                break
-            else:
-                print("Windows SDK %s incomplete" % sdkver)
-        else:
-            print("Windows SDK %s not found" % sdkver)
-
-    # set INCLUDE to include:
-    #   %VCINSTALLDIR%\include
-    # and LIB to include
-    #   %VCINSTALLDIR%\lib[\x64|\amd64|\ia64]
-
-    if vcinstalldir:
-        (vc_includes, vc_libs) = _get_include_lib_paths(vcinstalldir)
-        includes += vc_includes
-        libs += vc_libs
-
-    result = {
-        "path": ";".join(paths),
-        "include": ";".join(includes),
-        "lib": ";".join(libs),
-    }
-
-    print("Start -----------------------------------------")
-    import pprint as pp
-    for k in result.keys():
-        print(">>>>>> key:%s" % k)
-        pp.pprint(result[k].split(';'))
-    print("End -----------------------------------------")
+    if len(result) != len(interesting):
+        raise ValueError(str(list(result.keys())))
 
     return result
+
+def query_vcvarsall(version, arch="x86"):
+    # Try to get environement from vcvarsall.bat (Classical way)
+    try:
+        return original_query_vcvarsall(version, arch)
+    except DistutilsPlatformError:
+        # Pass error if Vcvarsall.bat is missing
+        pass
+    except ValueError:
+        # Pass error if environment not set after executing vcvarsall.bat
+        pass
+
+    import msvc
+    return msvc.msvc9_query_vcvarsall(version, arch)
+
 
 # More globals
 VERSION = get_build_version()
@@ -542,15 +444,9 @@ class MSVCCompiler(CCompiler) :
                                           '/Z7', '/D_DEBUG']
 
         self.ldflags_shared = ['/DLL', '/nologo', '/INCREMENTAL:NO']
-        if self.__version >= 10:
-            self.ldflags_shared = ['/DLL', '/nologo', '/INCREMENTAL:NO', '/Manifest']
         if self.__version >= 7:
             self.ldflags_shared_debug = [
                 '/DLL', '/nologo', '/INCREMENTAL:no', '/DEBUG', '/pdb:None'
-                ]
-        if self.__version >= 10:
-            self.ldflags_shared_debug = [
-                '/DLL', '/nologo', '/INCREMENTAL:no', '/DEBUG', '/pdb:None', '/Manifest'
                 ]
         self.ldflags_static = [ '/nologo']
 

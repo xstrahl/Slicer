@@ -1,0 +1,66 @@
+From b8e3ba4c1f1127171e4186bdcdbab49067f0ed2c Mon Sep 17 00:00:00 2001
+From: Jean-Christophe Fillion-Robin <jchris.fillionr@kitware.com>
+Date: Thu, 16 Mar 2017 03:32:00 -0400
+Subject: [PATCH] distutils/msvc9compiler: Add support for Visual C++ Compiler
+ for Py2.7
+
+This commit introduced a patched version of msvc copied from
+setuptools version pypa/setuptools@907fc81 [1] and updated to
+import msvc.py module.
+
+
+[1] https://github.com/pypa/setuptools/blob/907fc81/setuptools/msvc.py
+---
+ Lib/distutils/msvc9compiler.py | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/Lib/distutils/msvc9compiler.py b/Lib/distutils/msvc9compiler.py
+index 7ec9b92..da034f7 100644
+--- a/Lib/distutils/msvc9compiler.py
++++ b/Lib/distutils/msvc9compiler.py
+@@ -222,6 +222,11 @@ def find_vcvarsall(version):
+     At first it tries to find the productdir of VS 2008 in the registry. If
+     that fails it falls back to the VS90COMNTOOLS env var.
+     """
++    import msvc
++    vcvars = msvc.msvc9_find_vcvarsall(version)
++    if vcvars is not None:
++        return vcvars
++
+     vsbase = VS_BASE % version
+     try:
+         productdir = Reg.get_value(r"%s\Setup\VC" % vsbase,
+@@ -260,7 +265,7 @@ def find_vcvarsall(version):
+     log.debug("Unable to find vcvarsall.bat")
+     return None
+ 
+-def query_vcvarsall(version, arch="x86"):
++def original_query_vcvarsall(version, arch="x86"):
+     """Launch vcvarsall.bat and read the settings from its environment
+     """
+     vcvarsall = find_vcvarsall(version)
+@@ -300,6 +305,21 @@ def query_vcvarsall(version, arch="x86"):
+ 
+     return result
+ 
++def query_vcvarsall(version, arch="x86"):
++    # Try to get environement from vcvarsall.bat (Classical way)
++    try:
++        return original_query_vcvarsall(version, arch)
++    except DistutilsPlatformError:
++        # Pass error if Vcvarsall.bat is missing
++        pass
++    except ValueError:
++        # Pass error if environment not set after executing vcvarsall.bat
++        pass
++
++    import msvc
++    return msvc.msvc9_query_vcvarsall(version, arch)
++
++
+ # More globals
+ VERSION = get_build_version()
+ if VERSION < 8.0:
+-- 
+2.5.0
+
