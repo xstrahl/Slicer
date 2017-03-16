@@ -46,6 +46,7 @@ if(Slicer_USE_CTKAPPLAUNCHER)
       CONFIGURE_COMMAND ""
       BUILD_COMMAND ""
       INSTALL_COMMAND ""
+      USES_TERMINAL_DOWNLOAD 1
       DEPENDS
         ${${proj}_DEPENDENCIES}
       )

@@ -47,9 +47,15 @@ if((NOT DEFINED LibArchive_INCLUDE_DIR
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${proj}-build
     INSTALL_DIR LibArchive-install
+    USES_TERMINAL_DOWNLOAD 1
+    USES_TERMINAL_UPDATE 1
+    USES_TERMINAL_CONFIGURE 1
+    USES_TERMINAL_BUILD 1
+    USES_TERMINAL_INSTALL 1
     CMAKE_CACHE_ARGS
-    # Not used -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-    # Not used -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      # Not used -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      # Not used -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      #
       # Waiting the project is updated to properly detect intrinsic function, we
       # force the configuration to "Debug".
       # See https://gitlab.kitware.com/cmake/cmake/issues/16174#note_132691

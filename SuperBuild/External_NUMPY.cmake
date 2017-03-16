@@ -71,6 +71,10 @@ ExternalProject_Execute(${proj} \"install\" \"${PYTHON_EXECUTABLE}\" setup.py in
     ${${proj}_EP_ARGS}
     URL "http://slicer.kitware.com/midas3/download/item/210950/numpy-1.9.2.tar.gz"
     URL_MD5 "a1ed53432dbcd256398898d35bc8e645"
+    USES_TERMINAL_DOWNLOAD 1
+    USES_TERMINAL_CONFIGURE 1
+    USES_TERMINAL_BUILD 1
+    USES_TERMINAL_INSTALL 1
     SOURCE_DIR ${proj}
     BUILD_IN_SOURCE 1
     PATCH_COMMAND ${CMAKE_COMMAND} -DNUMPY_SRC_DIR=${CMAKE_BINARY_DIR}/${proj}

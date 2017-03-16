@@ -44,6 +44,8 @@ ExternalProject_Execute(${proj} \"install\" \"${PYTHON_EXECUTABLE}\" setup.py in
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ${CMAKE_COMMAND} -P ${_install_script}
+    USES_TERMINAL_DOWNLOAD 1
+    USES_TERMINAL_INSTALL 1
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )

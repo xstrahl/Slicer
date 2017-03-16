@@ -116,6 +116,8 @@ ExternalProject_Execute(${proj} \"configure\" sh config --with-zlib-lib=${_zlib_
       CONFIGURE_COMMAND ""
       BUILD_COMMAND make -j1 build_libs
       INSTALL_COMMAND ""
+      USES_TERMINAL_DOWNLOAD 1
+      USES_TERMINAL_BUILD 1
       DEPENDS
         ${${proj}_DEPENDENCIES}
       )
@@ -244,6 +246,7 @@ this version of visual studio [${MSVC_VERSION}]. You could either:
       CONFIGURE_COMMAND ""
       BUILD_COMMAND ""
       INSTALL_COMMAND ""
+      USES_TERMINAL_DOWNLOAD 1
       DEPENDS
         ${${proj}_DEPENDENCIES}
       )

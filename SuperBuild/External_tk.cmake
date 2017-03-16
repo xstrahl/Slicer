@@ -82,6 +82,10 @@ ExternalProject_Execute(${proj} \"install\" make install)
       CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${_configure_script}
       BUILD_COMMAND ${CMAKE_COMMAND} -P ${_build_script}
       INSTALL_COMMAND ${CMAKE_COMMAND} -P ${_install_script}
+      USES_TERMINAL_DOWNLOAD 1
+      USES_TERMINAL_CONFIGURE 1
+      USES_TERMINAL_BUILD 1
+      USES_TERMINAL_INSTALL 1
       DEPENDS
         ${${proj}_DEPENDENCIES}
       )

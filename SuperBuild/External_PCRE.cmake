@@ -54,6 +54,7 @@ ExternalProject_Execute(${proj} \"configure\" sh ${pcre_source_dir}/configure
     URL_MD5 fa69e4c5d8971544acd71d1f10d59193
     UPDATE_COMMAND "" # Disable update
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${_configure_script}
+    USES_TERMINAL_DOWNLOAD 1
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )

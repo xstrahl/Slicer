@@ -26,6 +26,7 @@ if(NOT SWIG_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       BUILD_COMMAND ""
       INSTALL_COMMAND ""
       UPDATE_COMMAND ""
+      USES_TERMINAL_DOWNLOAD 1
       )
 
     set(SWIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/swigwin-${SWIG_TARGET_VERSION}") # path specified as source in ep
@@ -85,6 +86,10 @@ ExternalProject_Execute(${proj} \"configure\" sh ${swig_source_dir}/configure
       URL_MD5 ${SWIG_DOWNLOAD_SOURCE_HASH}
       CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${_configure_script}
       DEPENDS ${${proj}_DEPENDENCIES}
+      USES_TERMINAL_DOWNLOAD 1
+      USES_TERMINAL_CONFIGURE 1
+      USES_TERMINAL_BUILD 1
+      USES_TERMINAL_INSTALL 1
       )
 
     set(SWIG_DIR "${swig_install_dir}/share/swig/${SWIG_TARGET_VERSION}")
