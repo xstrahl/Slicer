@@ -50,6 +50,10 @@ if((NOT DEFINED LibArchive_INCLUDE_DIR
     CMAKE_CACHE_ARGS
     # Not used -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
     # Not used -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      # Waiting the project is updated to properly detect intrinsic function, we
+      # force the configuration to "Debug".
+      # See https://gitlab.kitware.com/cmake/cmake/issues/16174#note_132691
+      -DCMAKE_TRY_COMPILE_CONFIGURATION:STRING=Debug
       -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
       -DBUILD_SHARED_LIBS:BOOL=ON
