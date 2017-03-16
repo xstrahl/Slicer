@@ -79,6 +79,14 @@ mark_as_superbuild(
   Slicer_CLIMODULES_DISABLED:STRING
   )
 
+# Ensure try_compile/try_run build "Release" executable. This is required
+# when using "Microsoft Visual C++ compiler for Python 2.7", in that case
+# no "amd64_microsoft.vc90.debugcrt" assembly are installed.
+if(NOT DEFINED CMAKE_CONFIGURATION_TYPES AND "${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+  set(CMAKE_TRY_COMPILE_CONFIGURATION "Release")
+  mark_as_superbuild(VARS CMAKE_TRY_COMPILE_CONFIGURATION:STRING ALL_PROJECTS)
+endif()
+
 #------------------------------------------------------------------------------
 # Slicer dependency list
 #------------------------------------------------------------------------------
