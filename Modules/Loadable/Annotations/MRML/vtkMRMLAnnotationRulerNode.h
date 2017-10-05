@@ -161,6 +161,14 @@ public:
   virtual void ApplyTransform(vtkAbstractTransform* transform) VTK_OVERRIDE;
 
   // Description:
+  // Enable/Disable the interaction with the respective points.
+  // True by default.
+  vtkSetMacro(Position1Enabled, bool);
+  vtkGetMacro(Position1Enabled, bool);
+  vtkSetMacro(Position2Enabled, bool);
+  vtkGetMacro(Position2Enabled, bool);
+
+  // Description:
   // Create default storage node or NULL if does not have one
   virtual vtkMRMLStorageNode* CreateDefaultStorageNode() VTK_OVERRIDE;
 
@@ -192,6 +200,8 @@ protected:
   // Description:
   // The format string that defines the text showing the distance
   char* DistanceAnnotationFormat;
+  bool Position1Enabled;
+  bool Position2Enabled;
 
   int SetControlPoint(int id, double newControl[3]);
 
