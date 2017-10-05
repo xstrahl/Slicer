@@ -5,6 +5,7 @@
 #include "vtkAnnotationRulerWidget.h"
 
 // VTK includes
+#include <vtkHandleWidget.h>
 #include <vtkObjectFactory.h>
 
 //---------------------------------------------------------------------------
@@ -20,6 +21,8 @@ void vtkAnnotationRulerWidget::PrintSelf(ostream& os, vtkIndent indent)
 vtkAnnotationRulerWidget::vtkAnnotationRulerWidget()
 {
   this->Is2DWidget = true;
+  this->Point1Enabled = true;
+  this->Point2Enabled = true;
 }
 
 //---------------------------------------------------------------------------
@@ -64,4 +67,12 @@ void vtkAnnotationRulerWidget::SetIs2DWidget(int value)
     return;
     }
   this->Is2DWidget = value;
+}
+
+//---------------------------------------------------------------------------
+void vtkAnnotationRulerWidget::SetEnabled(int enabled)
+{
+  Superclass::SetEnabled(enabled);
+  this->Point1Widget->SetEnabled(this->Point1Enabled);
+  this->Point2Widget->SetEnabled(this->Point2Enabled);
 }
