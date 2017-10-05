@@ -23,6 +23,8 @@ vtkMRMLAnnotationRulerNode::vtkMRMLAnnotationRulerNode()
   this->SetDistanceAnnotationFormat("%.0f mm");
   this->ModelID1 = NULL;
   this->ModelID2 = NULL;
+  this->Position1Enabled = true;
+  this->Position2Enabled = true;
 }
 
 //----------------------------------------------------------------------------
@@ -70,6 +72,8 @@ void vtkMRMLAnnotationRulerNode::WriteXML(ostream& of, int nIndent)
     of << " modelID2=\"" << this->ModelID2 << "\"";
     }
   of << " distanceMeasurement=\"" << this->GetDistanceMeasurement() << "\"";
+  of << " position1Enabled=\"" << this->GetPosition1Enabled() << "\"";
+  of << " position2Enabled=\"" << this->GetPosition2Enabled() << "\"";
 }
 
 
@@ -104,6 +108,14 @@ void vtkMRMLAnnotationRulerNode::ReadXMLAttributes(const char** atts)
       {
       this->SetModelID2(attValue.c_str());
       }
+    else if (!strcmp(attName, "position1Enabled"))
+      {
+      this->SetPosition1Enabled(attValue.c_str());
+      }
+    else if (!strcmp(attName, "position2Enabled"))
+      {
+      this->SetPosition2Enabled(attValue.c_str());
+      }
     }
   this->EndModify(disabledModify);
 }
@@ -120,6 +132,8 @@ void vtkMRMLAnnotationRulerNode::Copy(vtkMRMLNode *anode)
   //this->SetDistanceAnnotationFormat(node->GetDistanceAnnotationFormat());
   //this->SetModelID1(node->GetModelID1());
   //this->SetModelID2(node->GetModelID2());
+  //this->SetPosition1Enabled(node->GetPosition1Enabled());
+  //this->SetPosition2Enabled(node->GetPosition2Enabled());
 }
 
 //-----------------------------------------------------------
@@ -173,6 +187,8 @@ void vtkMRMLAnnotationRulerNode::PrintAnnotationInfo(ostream& os, vtkIndent inde
   os << indent << "Model 1: " << (this->ModelID1 ? this->ModelID1 : "none") << "\n";
   os << indent << "Model 2: " << (this->ModelID2 ? this->ModelID2 : "none") << "\n";
 
+  os << indent << "Position 1 enabled: " << this->Position1Enabled << "\n";
+  os << indent << "Position 2 enabled: " << this->Position2Enabled<< "\n";
 }
 
 //---------------------------------------------------------------------------
