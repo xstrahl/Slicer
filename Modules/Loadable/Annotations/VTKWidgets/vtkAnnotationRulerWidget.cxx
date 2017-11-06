@@ -73,6 +73,9 @@ void vtkAnnotationRulerWidget::SetIs2DWidget(int value)
 void vtkAnnotationRulerWidget::SetEnabled(int enabled)
 {
   Superclass::SetEnabled(enabled);
-  this->Point1Widget->SetEnabled(this->Point1Enabled);
-  this->Point2Widget->SetEnabled(this->Point2Enabled);
+  if (this->Interactor)
+    {
+    this->Point1Widget->SetEnabled(this->Point1Enabled);
+    this->Point2Widget->SetEnabled(this->Point2Enabled);
+    }
 }
