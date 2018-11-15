@@ -113,7 +113,6 @@ double qSlicerSubjectHierarchyFolderPlugin::canOwnSubjectHierarchyItem(vtkIdType
 {
   if (!itemID)
     {
-    qCritical() << Q_FUNC_INFO << ": Input item is invalid!";
     return 0.0;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -392,7 +391,6 @@ double qSlicerSubjectHierarchyFolderPlugin::canReparentItemInsideSubjectHierarch
 
   if (!itemID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return 0.0;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -424,7 +422,6 @@ bool qSlicerSubjectHierarchyFolderPlugin::reparentItemInsideSubjectHierarchy(vtk
 {
   if (!itemID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return false;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -475,7 +472,6 @@ vtkMRMLHierarchyNode* qSlicerSubjectHierarchyFolderPlugin::hierarchyNodeForItem(
 {
   if (!itemID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return 0;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -502,7 +498,6 @@ vtkIdType qSlicerSubjectHierarchyFolderPlugin::itemForHierarchyNode(vtkMRMLHiera
 {
   if (!hierarchyNode)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input hierarchy node";
     return vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -527,7 +522,6 @@ bool qSlicerSubjectHierarchyFolderPlugin::resolveHierarchyForItem(vtkIdType item
 {
   if (!itemID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return false;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();

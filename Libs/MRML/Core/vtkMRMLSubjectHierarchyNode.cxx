@@ -713,10 +713,6 @@ vtkSubjectHierarchyItem* vtkSubjectHierarchyItem::FindChildByID(vtkIdType itemID
     {
     return itemIt->second;
     }
-  else
-    {
-    vtkWarningMacro("FindChildByID: Item cache does not contain requested ID " << itemID);
-    }
 
   // On failure to look up in cache (should not happen), traverse tree to find item
   ChildVector::iterator childIt;
@@ -1793,7 +1789,6 @@ void vtkMRMLSubjectHierarchyNode::PrintItem(vtkIdType itemID, ostream& os, vtkIn
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("PrintItem: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -1893,7 +1888,6 @@ vtkMRMLNode* vtkMRMLSubjectHierarchyNode::GetItemDataNode(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemDataNode: Failed to find subject hierarchy item by ID " << itemID);
     return NULL;
     }
 
@@ -1906,7 +1900,6 @@ void vtkMRMLSubjectHierarchyNode::SetItemName(vtkIdType itemID, std::string name
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("SetItemName: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -1944,7 +1937,6 @@ std::string vtkMRMLSubjectHierarchyNode::GetItemName(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemName: Failed to find subject hierarchy item by ID " << itemID);
     return std::string();
     }
 
@@ -1957,7 +1949,6 @@ void vtkMRMLSubjectHierarchyNode::SetItemLevel(vtkIdType itemID, std::string lev
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("SetItemLevel: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -1973,7 +1964,6 @@ std::string vtkMRMLSubjectHierarchyNode::GetItemLevel(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemLevel: Failed to find subject hierarchy item by ID " << itemID);
     return std::string();
     }
 
@@ -1986,7 +1976,6 @@ void vtkMRMLSubjectHierarchyNode::SetItemOwnerPluginName(vtkIdType itemID, std::
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("SetItemOwnerPluginName: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -2003,7 +1992,6 @@ std::string vtkMRMLSubjectHierarchyNode::GetItemOwnerPluginName(vtkIdType itemID
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemOwnerPluginName: Failed to find subject hierarchy item by ID " << itemID);
     return std::string();
     }
 
@@ -2016,7 +2004,6 @@ void vtkMRMLSubjectHierarchyNode::SetItemExpanded(vtkIdType itemID, bool expande
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("SetItemExpanded: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -2033,7 +2020,6 @@ bool vtkMRMLSubjectHierarchyNode::GetItemExpanded(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemExpanded: Failed to find subject hierarchy item by ID " << itemID);
     return false;
     }
 
@@ -2046,7 +2032,6 @@ int vtkMRMLSubjectHierarchyNode::GetItemPositionUnderParent(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemPositionUnderParent: Failed to find subject hierarchy item by ID " << itemID);
     return false;
     }
   return item->GetPositionUnderParent();
@@ -2058,7 +2043,6 @@ vtkIdType vtkMRMLSubjectHierarchyNode::GetItemByPositionUnderParent(vtkIdType pa
   vtkSubjectHierarchyItem* parentItem = this->Internal->FindItemByID(parentItemID);
   if (!parentItem)
     {
-    vtkErrorMacro("GetItemByPositionUnderParent: Failed to find subject hierarchy item by ID " << parentItemID);
     return false;
     }
   return parentItem->GetChildByPositionUnderParent(position);
@@ -2070,7 +2054,6 @@ void vtkMRMLSubjectHierarchyNode::SetItemUID(vtkIdType itemID, std::string uidNa
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("SetItemUID: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -2083,7 +2066,6 @@ std::string vtkMRMLSubjectHierarchyNode::GetItemUID(vtkIdType itemID, std::strin
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemUID: Failed to find subject hierarchy item by ID " << itemID);
     return std::string();
     }
 
@@ -2097,7 +2079,6 @@ void vtkMRMLSubjectHierarchyNode::SetItemAttribute(vtkIdType itemID, std::string
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("SetItemAttribute: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -2110,7 +2091,6 @@ bool vtkMRMLSubjectHierarchyNode::RemoveItemAttribute(vtkIdType itemID, std::str
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("RemoveItemAttribute: Failed to find subject hierarchy item by ID " << itemID);
     return false;
     }
 
@@ -2124,7 +2104,6 @@ std::string vtkMRMLSubjectHierarchyNode::GetItemAttribute(vtkIdType itemID, std:
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemAttribute: Failed to find subject hierarchy item by ID " << itemID);
     return std::string();
     }
 
@@ -2137,7 +2116,6 @@ std::vector<std::string> vtkMRMLSubjectHierarchyNode::GetItemAttributeNames(vtkI
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemAttributeNames: Failed to find subject hierarchy item by ID " << itemID);
     return std::vector<std::string>();
     }
 
@@ -2150,7 +2128,6 @@ bool vtkMRMLSubjectHierarchyNode::HasItemAttribute(vtkIdType itemID, std::string
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("HasItemAttribute: Failed to find subject hierarchy item by ID " << itemID);
     return false;
     }
 
@@ -2164,7 +2141,6 @@ void vtkMRMLSubjectHierarchyNode::ItemModified(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("ItemModified: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -2179,7 +2155,6 @@ void vtkMRMLSubjectHierarchyNode::RequestOwnerPluginSearch(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("RequestOwnerPluginSearch: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -2309,7 +2284,6 @@ bool vtkMRMLSubjectHierarchyNode::RemoveItem(vtkIdType itemID, bool removeDataNo
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("RemoveItem: Failed to find subject hierarchy item by ID " << itemID);
     return false;
     }
 
@@ -2396,7 +2370,6 @@ bool vtkMRMLSubjectHierarchyNode::RemoveItemChildren(vtkIdType itemID, bool remo
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("RemoveItem: Failed to find subject hierarchy item by ID " << itemID);
     return false;
     }
 
@@ -2428,7 +2401,6 @@ void vtkMRMLSubjectHierarchyNode::SetItemParent(vtkIdType itemID, vtkIdType pare
   vtkSubjectHierarchyItem* item = this->Internal->SceneItem->FindChildByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("SetItemParent: Failed to find non-scene subject hierarchy item by ID " << itemID);
     return;
     }
   vtkSubjectHierarchyItem* parentItem = this->Internal->FindItemByID(parentItemID);
@@ -2448,7 +2420,6 @@ vtkIdType vtkMRMLSubjectHierarchyNode::GetItemParent(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemParent: Failed to find subject hierarchy item by ID " << itemID);
     return INVALID_ITEM_ID;
     }
   if (!item->Parent)
@@ -2467,7 +2438,6 @@ void vtkMRMLSubjectHierarchyNode::GetItemChildren(vtkIdType itemID, std::vector<
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemChildren: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -2507,7 +2477,6 @@ bool vtkMRMLSubjectHierarchyNode::ReparentItemByDataNode(vtkIdType itemID, vtkMR
   vtkSubjectHierarchyItem* item = this->Internal->SceneItem->FindChildByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("ReparentItem: Failed to find non-scene subject hierarchy item by ID " << itemID);
     return false;
     }
   vtkSubjectHierarchyItem* formerParent = item->Parent;
@@ -2541,7 +2510,6 @@ bool vtkMRMLSubjectHierarchyNode::MoveItem(vtkIdType itemID, vtkIdType beforeIte
   vtkSubjectHierarchyItem* item = this->Internal->SceneItem->FindChildByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("MoveItem: Failed to find non-scene subject hierarchy item by ID " << itemID);
     return false;
     }
 
@@ -2581,7 +2549,6 @@ vtkIdType vtkMRMLSubjectHierarchyNode::GetItemByDataNode(vtkMRMLNode* dataNode)
 {
   if (!dataNode)
     {
-    vtkErrorMacro("GetItemByDataNode: Invalid data node to find");
     return INVALID_ITEM_ID;
     }
 
@@ -2595,7 +2562,6 @@ vtkIdType vtkMRMLSubjectHierarchyNode::GetItemChildWithName(vtkIdType parentItem
   vtkSubjectHierarchyItem* parentItem = this->Internal->FindItemByID(parentItemID);
   if (!parentItem)
     {
-    vtkErrorMacro("GetItemChildWithName: Failed to find subject hierarchy item by ID " << parentItemID);
     return INVALID_ITEM_ID;
     }
 
@@ -2622,7 +2588,6 @@ void vtkMRMLSubjectHierarchyNode::GetDataNodesInBranch(vtkIdType itemID, vtkColl
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetDataNodesInBranch: Failed to find subject hierarchy item by ID " << itemID);
     return;
     }
 
@@ -2635,8 +2600,6 @@ vtkMRMLNode* vtkMRMLSubjectHierarchyNode::GetParentDataNode(vtkMRMLNode* dataNod
   vtkIdType itemID = this->GetItemByDataNode(dataNode);
   if (itemID == INVALID_ITEM_ID)
     {
-    vtkErrorMacro("GetParentDataNode: Given data node (" << (dataNode ? dataNode->GetName() : "NULL")
-      << ") cannot be found in subject hierarchy");
     return NULL;
     }
 
@@ -2768,7 +2731,6 @@ bool vtkMRMLSubjectHierarchyNode::IsItemLevel(vtkIdType itemID, std::string leve
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("IsItemLevel: Failed to find subject hierarchy item by ID " << itemID);
     return false;
     }
 
@@ -2781,7 +2743,6 @@ bool vtkMRMLSubjectHierarchyNode::IsItemVirtualBranchParent(vtkIdType itemID)
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("IsItemVirtualBranchParent: Failed to find subject hierarchy item by ID " << itemID);
     return false;
     }
 
@@ -2794,7 +2755,6 @@ std::string vtkMRMLSubjectHierarchyNode::GetAttributeFromItemAncestor(vtkIdType 
   vtkSubjectHierarchyItem* item = this->Internal->SceneItem->FindChildByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetAttributeFromAncestor: Failed to find non-scene subject hierarchy item by ID " << itemID);
     return std::string();
     }
 
@@ -2807,7 +2767,6 @@ vtkIdType vtkMRMLSubjectHierarchyNode::GetItemAncestorAtLevel(vtkIdType itemID, 
   vtkSubjectHierarchyItem* item = this->Internal->SceneItem->FindChildByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemAncestorAtLevel: Failed to find non-scene subject hierarchy item by ID " << itemID);
     return INVALID_ITEM_ID;
     }
 
@@ -2826,7 +2785,6 @@ bool vtkMRMLSubjectHierarchyNode::IsAnyNodeInBranchTransformed(vtkIdType itemID,
   vtkSubjectHierarchyItem* item = this->Internal->SceneItem->FindChildByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("IsAnyNodeInBranchTransformed: Failed to find non-scene subject hierarchy item by ID " << itemID);
     return false;
     }
   if (item->DataNode)
@@ -2888,7 +2846,6 @@ std::vector<vtkIdType> vtkMRMLSubjectHierarchyNode::GetItemsReferencedFromItemBy
   vtkSubjectHierarchyItem* item = this->Internal->SceneItem->FindChildByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemsReferencedFromItemByDICOM: Failed to find non-scene subject hierarchy item by ID " << itemID);
     return referencedItemIDs;
     }
 
@@ -2980,7 +2937,6 @@ std::vector<vtkIdType> vtkMRMLSubjectHierarchyNode::GetItemsReferencingItemByDIC
   vtkSubjectHierarchyItem* item = this->Internal->SceneItem->FindChildByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetItemsReferencingItemByDICOM: Failed to find non-scene subject hierarchy item by ID " << itemID);
     return referencingItemIDs;
     }
 
@@ -3102,7 +3058,6 @@ int vtkMRMLSubjectHierarchyNode::GetNumberOfItemChildren(vtkIdType itemID, bool 
   vtkSubjectHierarchyItem* item = this->Internal->FindItemByID(itemID);
   if (!item)
     {
-    vtkErrorMacro("GetNumberOfItemChildren: Failed to find subject hierarchy item by ID " << itemID);
     return -1;
     }
 
