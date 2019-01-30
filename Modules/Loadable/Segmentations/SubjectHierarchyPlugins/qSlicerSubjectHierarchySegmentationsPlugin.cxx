@@ -195,7 +195,6 @@ double qSlicerSubjectHierarchySegmentationsPlugin::canOwnSubjectHierarchyItem(vt
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return 0.0;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -229,7 +228,6 @@ QString qSlicerSubjectHierarchySegmentationsPlugin::tooltip(vtkIdType itemID)con
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return QString("Invalid");
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -292,7 +290,6 @@ QIcon qSlicerSubjectHierarchySegmentationsPlugin::icon(vtkIdType itemID)
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return QIcon();
     }
 
@@ -320,7 +317,6 @@ void qSlicerSubjectHierarchySegmentationsPlugin::setDisplayVisibility(vtkIdType 
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -360,7 +356,6 @@ int qSlicerSubjectHierarchySegmentationsPlugin::getDisplayVisibility(vtkIdType i
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return -1;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
