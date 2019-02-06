@@ -496,8 +496,12 @@ class DICOMDetailsBase(VTKObservationMixin, SizePositionSettingsMixin):
           sopClassUIDs.add(sopClassUID)
 
     # 3 - check if data matches
-    extensionsManagerModel = slicer.app.extensionsManagerModel()
-    installedExtensions = extensionsManagerModel.installedExtensions
+    try:
+      # Slicer may not be built with the extension manager
+      extensionsManagerModel = slicer.app.extensionsManagerModel()
+      installedExtensions = extensionsManagerModel.installedExtensions
+    except AttributeError:
+      installedExtensions = []
     extensionsToOffer = []
     for extension in dicomExtensions['extensions']:
       extensionName = extension['name']
