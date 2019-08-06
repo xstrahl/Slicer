@@ -345,17 +345,8 @@ bool vtkMRMLSliceNode::MatrixAreEqual(const vtkMatrix4x4* matrix, const vtkMatri
 //----------------------------------------------------------------------------
 vtkMatrix3x3* vtkMRMLSliceNode::GetSliceOrientationPreset(const std::string& name)
 {
-  std::vector<OrientationPresetType>::iterator it;
-  for (it = this->OrientationMatrices.begin(); it != this->OrientationMatrices.end(); ++it)
-  {
-    if (it->first == name)
-    {
-      return it->second;
-    }
-  }
-
-  vtkErrorMacro("GetSliceOrientationPreset: invalid orientation preset name: " << name);
-  return nullptr;
+  OrientationPresetType* preset = this->GetOrientationPreset(name);
+  return preset ? preset->Orientation : nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -370,11 +361,9 @@ std::string vtkMRMLSliceNode::GetSliceOrientationPresetName(vtkMatrix3x3* orient
   std::vector<OrientationPresetType>::reverse_iterator it;
   for (it = this->OrientationMatrices.rbegin(); it != this->OrientationMatrices.rend(); ++it)
   {
-    std::string presetName = it->first;
-    vtkMatrix3x3* presetOrientationMatrix = this->GetSliceOrientationPreset(presetName);
-    if (vtkAddonMathUtilities::MatrixAreEqual(orientationMatrix, presetOrientationMatrix))
+    if (vtkAddonMathUtilities::MatrixAreEqual(orientationMatrix, it->Orientation))
     {
-      return presetName;
+      return it->Name;
     }
   }
   return std::string();
@@ -395,7 +384,31 @@ std::string vtkMRMLSliceNode::GetOrientation(vtkMatrix4x4* sliceToRAS)
 }
 
 //----------------------------------------------------------------------------
-void vtkMRMLSliceNode::GetSliceOrientationPresetNames(vtkStringArray* presetOrientationNames)
+std::string vtkMRMLSliceNode::GetSliceOrientationPresetPrefix(const std::string& name)
+{
+  if (name == "Reformat")
+    {
+    return "";
+    }
+
+  OrientationPresetType* preset = this->GetOrientationPreset(name);
+  return preset ? preset->Prefix : "";
+}
+
+//----------------------------------------------------------------------------
+std::string vtkMRMLSliceNode::GetSliceOrientationPresetTooltip(const std::string& name)
+{
+  if (name == "Reformat")
+  {
+    return "Oblique";
+  }
+
+  OrientationPresetType* preset = this->GetOrientationPreset(name);
+  return preset ? preset->Tooltip : "";
+}
+
+//----------------------------------------------------------------------------
+void vtkMRMLSliceNode::GetSliceOrientationPresetNames(vtkStringArray *presetOrientationNames)
 {
   if (presetOrientationNames == nullptr)
   {
@@ -409,7 +422,7 @@ void vtkMRMLSliceNode::GetSliceOrientationPresetNames(vtkStringArray* presetOrie
   int id = 0;
   for (it = this->OrientationMatrices.begin(); it != this->OrientationMatrices.end(); ++it)
   {
-    presetOrientationNames->SetValue(id, it->first);
+    presetOrientationNames->SetValue(id, it->Name);
     id++;
   }
 }
@@ -421,7 +434,9 @@ int vtkMRMLSliceNode::GetNumberOfSliceOrientationPresets() const
 }
 
 //----------------------------------------------------------------------------
-bool vtkMRMLSliceNode::AddSliceOrientationPreset(const std::string& name, vtkMatrix3x3* orientationMatrix)
+bool vtkMRMLSliceNode::AddSliceOrientationPreset(
+  const std::string& name, vtkMatrix3x3* orientationMatrix,
+  const std::string &prefix, const std::string &tooltip)
 {
   if (name == vtkMRMLSliceNode::GetReformatOrientationName())
   {
@@ -430,17 +445,19 @@ bool vtkMRMLSliceNode::AddSliceOrientationPreset(const std::string& name, vtkMat
     return false;
   }
 
-  std::vector<OrientationPresetType>::iterator it;
-  for (it = this->OrientationMatrices.begin(); it != this->OrientationMatrices.end(); ++it)
-  {
-    if (it->first == name)
+  if (this->GetOrientationPreset(name, false))
     {
-      it->second->DeepCopy(orientationMatrix);
-      return true;
+    vtkDebugMacro("AddSliceOrientationPreset: the orientation preset " << name << " is already stored.");
+    return false;
     }
-  }
 
-  this->OrientationMatrices.emplace_back(name, orientationMatrix);
+  OrientationPresetType newOrientation;
+  newOrientation.Name = name;
+  newOrientation.Orientation = orientationMatrix;
+  newOrientation.Prefix = prefix;
+  newOrientation.Tooltip = tooltip;
+
+  this->OrientationMatrices.emplace_back(newOrientation);
   return true;
 }
 
@@ -449,9 +466,9 @@ bool vtkMRMLSliceNode::RemoveSliceOrientationPreset(const std::string& name)
 {
   std::vector<OrientationPresetType>::iterator it;
   for (it = this->OrientationMatrices.begin(); it != this->OrientationMatrices.end(); ++it)
-  {
-    if (it->first == name)
     {
+    if (it->Name == name)
+      {
       this->OrientationMatrices.erase(it);
       return true;
     }
@@ -459,6 +476,26 @@ bool vtkMRMLSliceNode::RemoveSliceOrientationPreset(const std::string& name)
 
   vtkErrorMacro("RemoveSliceOrientationPreset: the orientation preset " << name << " is not stored.");
   return false;
+}
+
+//----------------------------------------------------------------------------
+OrientationPresetType* vtkMRMLSliceNode::GetOrientationPreset(const std::string& name, bool error)
+{
+  std::vector< OrientationPresetType >::iterator it;
+  for (it = this->OrientationMatrices.begin(); it != this->OrientationMatrices.end(); ++it)
+    {
+    if (it->Name == name)
+      {
+      return &(*it);
+      }
+    }
+
+  if (error)
+    {
+    vtkErrorMacro("GetOrientationPreset: The orientation preset "
+      "'" << name << "' does NOT exist.");
+    }
+  return nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -481,42 +518,61 @@ bool vtkMRMLSliceNode::RenameSliceOrientationPreset(const std::string& name, con
     this->SetOrientationReference(updatedName.c_str());
   }
 
-  std::vector<OrientationPresetType>::iterator it;
-  for (it = this->OrientationMatrices.begin(); it != this->OrientationMatrices.end(); ++it)
-  {
-    if (it->first == name)
+  OrientationPresetType* preset = this->GetOrientationPreset(name);
+  if (preset)
     {
-      it->first = updatedName;
-      return true;
+    preset->Name = updatedName;
+    return true;
     }
-  }
-
-  vtkErrorMacro("RenameSliceOrientationPreset: The orientation preset "
-                "'"
-                << name << "' does NOT exist.");
   return false;
 }
 
 //----------------------------------------------------------------------------
-bool vtkMRMLSliceNode::HasSliceOrientationPreset(const std::string& name)
+bool vtkMRMLSliceNode::RenameSliceOrientationPresetPrefix(const std::string &name, const std::string &prefix)
 {
   if (name == vtkMRMLSliceNode::GetReformatOrientationName())
-  {
-    vtkWarningMacro("HasSliceOrientationPreset: 'Reformat' refers to any "
-                    "arbitrary orientation. It can NOT be used as a preset name.");
-    return false;
-  }
-
-  std::vector<OrientationPresetType>::iterator it;
-  for (it = this->OrientationMatrices.begin(); it != this->OrientationMatrices.end(); ++it)
-  {
-    if (it->first == name)
     {
-      return true;
+    vtkErrorMacro("RenameSliceOrientationPresetPrefix: 'Reformat' refers to any "
+      "arbitrary orientation. It can NOT be used as a preset name.");
+    return false;
+   }
+  OrientationPresetType* preset = this->GetOrientationPreset(name);
+  if (preset && preset->Prefix.compare(prefix) != 0)
+    {
+    preset->Prefix = prefix;
+    return true;
     }
-  }
-
   return false;
+}
+
+//----------------------------------------------------------------------------
+bool vtkMRMLSliceNode::RenameSliceOrientationPresetTooltip(const std::string &name, const std::string &tip)
+{
+  if (name == "Reformat")
+    {
+    vtkErrorMacro("RenameSliceOrientationPresetTooltip: 'Reformat' refers to any "
+      "arbitrary orientation. It can NOT be used as a preset name.");
+    return false;
+    }
+  OrientationPresetType* preset = this->GetOrientationPreset(name);
+  if (preset && preset->Tooltip.compare(tip) != 0)
+    {
+    preset->Tooltip = tip;
+    return true;
+    }
+  return false;
+}
+
+//----------------------------------------------------------------------------
+bool vtkMRMLSliceNode::HasSliceOrientationPreset(const std::string &name)
+{
+  if (name == "Reformat")
+    {
+    vtkWarningMacro("HasSliceOrientationPreset: 'Reformat' refers to any "
+      "arbitrary orientation. It can NOT be used as a preset name.");
+    return false;
+    }
+  return this->GetOrientationPreset(name, false) != nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -642,11 +698,14 @@ void vtkMRMLSliceNode::AddDefaultSliceOrientationPresets(vtkMRMLScene* scene, bo
   {
     defaultNode.TakeReference(scene->CreateNodeByClass("vtkMRMLSliceNode"));
     scene->AddDefaultNode(defaultNode);
-  }
+    }
   vtkMRMLSliceNode* defaultSliceNode = vtkMRMLSliceNode::SafeDownCast(defaultNode);
-  defaultSliceNode->AddSliceOrientationPreset("Axial", axialSliceToRAS);
-  defaultSliceNode->AddSliceOrientationPreset("Sagittal", sagittalSliceToRAS);
-  defaultSliceNode->AddSliceOrientationPreset("Coronal", coronalSliceToRAS);
+  defaultSliceNode->AddSliceOrientationPreset(
+    "Axial", axialSliceToRAS.GetPointer(), "S: ", "I <-----> S");
+  defaultSliceNode->AddSliceOrientationPreset(
+    "Sagittal", sagittalSliceToRAS.GetPointer(), "R: ", "L <-----> R");
+  defaultSliceNode->AddSliceOrientationPreset(
+    "Coronal", coronalSliceToRAS.GetPointer(), "A: ", "P <-----> A");
 }
 
 //----------------------------------------------------------------------------
@@ -883,15 +942,18 @@ void vtkMRMLSliceNode::WriteXML(ostream& of, int nIndent)
     {
       for (int j = 0; j < 3; j++)
       {
-        ss << it->second->GetElement(i, j);
+        ss << it->Orientation->GetElement(i, j);
         if (!(i == 2 && j == 2))
         {
           ss << " ";
+          }
         }
       }
+      of << " orientationMatrix"<< this->URLEncodeString(it->Name.c_str()) <<"=\"" << ss.str().c_str()
+        << " " << this->URLEncodeString(it->Prefix.c_str())
+        << " " << this->URLEncodeString(it->Tooltip.c_str())
+        << "\"";
     }
-    of << " orientationMatrix" << this->URLEncodeString(it->first.c_str()) << "=\"" << ss.str().c_str() << "\"";
-  }
 
   vtkMRMLWriteXMLStdStringMacro(orientation, Orientation);
   vtkMRMLWriteXMLStringMacro(defaultOrientation, DefaultOrientation);
@@ -994,8 +1056,17 @@ void vtkMRMLSliceNode::ReadXMLAttributes(const char** atts)
         orientationMatrix->SetElement(i, j, val);
       }
     }
+      std::string prefix;
+      ss >> prefix;
+
+      std::string tooltip;
+      ss >> tooltip;
+
     name.erase(0, 17);
-    this->AddSliceOrientationPreset(name, orientationMatrix.GetPointer());
+    this->AddSliceOrientationPreset(
+        name, orientationMatrix.GetPointer(),
+        this->URLDecodeString(prefix.c_str()),
+        this->URLDecodeString(tooltip.c_str()));
   }
 
   vtkMRMLReadXMLVectorMacro(prescribedSliceSpacing, PrescribedSliceSpacing, double, 3);
@@ -1094,9 +1165,13 @@ void vtkMRMLSliceNode::CopyContent(vtkMRMLNode* anode, bool deepCopy /*=true*/)
   vtkNew<vtkStringArray> namedOrientations;
   node->GetSliceOrientationPresetNames(namedOrientations.GetPointer());
   for (int i = 0; i < namedOrientations->GetNumberOfValues(); i++)
-  {
-    this->AddSliceOrientationPreset(namedOrientations->GetValue(i), node->GetSliceOrientationPreset(namedOrientations->GetValue(i)));
-  }
+    {
+    std::string name = namedOrientations->GetValue(i);
+    this->AddSliceOrientationPreset(name,
+        node->GetSliceOrientationPreset(name),
+        node->GetSliceOrientationPresetPrefix(name),
+        node->GetSliceOrientationPresetTooltip(name));
+    }
 
   std::string orientation = node->GetOrientation();
   if (orientation != vtkMRMLSliceNode::GetReformatOrientationName())
@@ -1221,8 +1296,10 @@ void vtkMRMLSliceNode::PrintSelf(ostream& os, vtkIndent indent)
   std::vector<OrientationPresetType>::iterator it;
   for (it = this->OrientationMatrices.begin(); it != this->OrientationMatrices.end(); ++it)
   {
-    os << indent << "OrientationMatrix" << this->URLEncodeString(it->first.c_str()) << ": \n";
-    it->second->PrintSelf(os, indent.GetNextIndent());
+    os << indent << "OrientationMatrix" << this->URLEncodeString(it->Name.c_str()) << ": \n";
+    it->Orientation->PrintSelf(os, indent.GetNextIndent());
+    os << indent.GetNextIndent() << "Prefix: " << this->URLEncodeString(it->Prefix.c_str()) << "\n";
+    os << indent.GetNextIndent() << "Tooltip: " << this->URLEncodeString(it->Tooltip.c_str()) << "\n";
   }
 
   os << indent << "XYToRAS: \n";

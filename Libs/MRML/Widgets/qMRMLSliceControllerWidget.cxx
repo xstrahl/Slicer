@@ -806,12 +806,11 @@ void qMRMLSliceControllerWidgetPrivate::updateWidgetFromMRMLSliceNode()
   Self::updateSliceOrientationSelector(sliceNode, this->SliceOrientationSelector);
 
   // Update slice offset slider tooltip
-  vtkMatrix4x4* sliceToRas = sliceNode->GetSliceToRAS();
-  double planeNormal[3] = { sliceToRas->GetElement(0, 2), sliceToRas->GetElement(1, 2), sliceToRas->GetElement(2, 2) };
-  std::string positiveAxisLabel = sliceNode->GetDirectionLabel(planeNormal, true);
-  std::string negativeAxisLabel = sliceNode->GetDirectionLabel(planeNormal, false);
-  this->SliceOffsetSlider->setToolTip(QString("%1 <-----> %2").arg(QString::fromStdString(negativeAxisLabel)).arg(QString::fromStdString(positiveAxisLabel)));
-  this->SliceOffsetSlider->setPrefix(QString("%1: ").arg(QString::fromStdString(positiveAxisLabel)));
+  std::string orientation = sliceNode->GetOrientation();
+  this->SliceOffsetSlider->setToolTip(
+    qMRMLSliceControllerWidget::tr(sliceNode->GetSliceOrientationPresetTooltip(orientation).c_str()));
+  this->SliceOffsetSlider->setPrefix(
+    qMRMLSliceControllerWidget::tr(sliceNode->GetSliceOrientationPresetPrefix(orientation).c_str()));
 
   // Update slice visibility toggle
   this->actionShow_in_3D->setChecked(sliceNode->GetSliceVisible());
