@@ -34,6 +34,8 @@ int InitializeDefaultMatrixTest();
 int SlabReconstructionEnabledTest();
 int SlabReconstructionTypeTest();
 int SlabReconstructionThicknessTest();
+int SliceOrientationPresetPrefixTest();
+int SliceOrientationPresetTooltipTest();
 
 //----------------------------------------------------------------------------
 int vtkMRMLSliceNodeTest1(int, char*[])
@@ -53,6 +55,8 @@ int vtkMRMLSliceNodeTest1(int, char*[])
   CHECK_EXIT_SUCCESS(SlabReconstructionEnabledTest());
   CHECK_EXIT_SUCCESS(SlabReconstructionTypeTest());
   CHECK_EXIT_SUCCESS(SlabReconstructionThicknessTest());
+  CHECK_EXIT_SUCCESS(SliceOrientationPresetPrefixTest());
+  CHECK_EXIT_SUCCESS(SliceOrientationPresetTooltipTest());
 
   return EXIT_SUCCESS;
 }
@@ -502,6 +506,62 @@ int SlabReconstructionThicknessTest()
     sliceNode->SetSlabReconstructionThickness(99.5);
     CHECK_DOUBLE(sliceNode->GetSlabReconstructionThickness(), 99.5);
   }
+
+  return EXIT_SUCCESS;
+}
+
+//----------------------------------------------------------------------------
+int SliceOrientationPresetPrefixTest()
+{
+  vtkNew<vtkMRMLSliceNode> sliceNode;
+
+  vtkNew<vtkMatrix3x3> testMatrix;
+  sliceNode->AddSliceOrientationPreset("test_prefix", testMatrix.GetPointer());
+  CHECK_STD_STRING(sliceNode->GetSliceOrientationPresetPrefix("test_prefix"), "");
+  CHECK_STD_STRING(sliceNode->GetSliceOrientationPresetPrefix("Reformat"), "");
+
+  TESTING_OUTPUT_ASSERT_ERRORS_BEGIN();
+  CHECK_BOOL(sliceNode->RenameSliceOrientationPresetPrefix("", "t:"), false);
+  TESTING_OUTPUT_ASSERT_ERRORS_END();
+
+  TESTING_OUTPUT_ASSERT_ERRORS_BEGIN();
+  CHECK_BOOL(sliceNode->RenameSliceOrientationPresetPrefix("wrong name", "t:"), false);
+  TESTING_OUTPUT_ASSERT_ERRORS_END();
+
+  TESTING_OUTPUT_ASSERT_ERRORS_BEGIN();
+  CHECK_BOOL(sliceNode->RenameSliceOrientationPresetPrefix("Reformat", "t:"), false);
+  TESTING_OUTPUT_ASSERT_ERRORS_END();
+
+  CHECK_BOOL(sliceNode->RenameSliceOrientationPresetPrefix("test_prefix", "t:"), true);
+  CHECK_STD_STRING(sliceNode->GetSliceOrientationPresetPrefix("test_prefix"), "t:");
+
+  return EXIT_SUCCESS;
+}
+
+//----------------------------------------------------------------------------
+int SliceOrientationPresetTooltipTest()
+{
+  vtkNew<vtkMRMLSliceNode> sliceNode;
+
+  vtkNew<vtkMatrix3x3> testMatrix;
+  sliceNode->AddSliceOrientationPreset("test_tooltip", testMatrix.GetPointer());
+  CHECK_STD_STRING(sliceNode->GetSliceOrientationPresetTooltip("test_tooltip"), "Oblique");
+  CHECK_STD_STRING(sliceNode->GetSliceOrientationPresetTooltip("Reformat"), "Oblique");
+
+  TESTING_OUTPUT_ASSERT_ERRORS_BEGIN();
+  CHECK_BOOL(sliceNode->RenameSliceOrientationPresetTooltip("", "this is a tip"), false);
+  TESTING_OUTPUT_ASSERT_ERRORS_END();
+
+  TESTING_OUTPUT_ASSERT_ERRORS_BEGIN();
+  CHECK_BOOL(sliceNode->RenameSliceOrientationPresetTooltip("wrong name", "this is a tip"), false);
+  TESTING_OUTPUT_ASSERT_ERRORS_END();
+
+  TESTING_OUTPUT_ASSERT_ERRORS_BEGIN();
+  CHECK_BOOL(sliceNode->RenameSliceOrientationPresetTooltip("Reformat", "this is a tip"), false);
+  TESTING_OUTPUT_ASSERT_ERRORS_END();
+
+  CHECK_BOOL(sliceNode->RenameSliceOrientationPresetTooltip("test_tooltip", "this is a tip"), true);
+  CHECK_STD_STRING(sliceNode->GetSliceOrientationPresetTooltip("test_tooltip"), "this is a tip");
 
   return EXIT_SUCCESS;
 }
