@@ -619,7 +619,6 @@ bool qMRMLSubjectHierarchyModel::moveToRow(vtkIdType itemID, int newRow)
 
   if (!itemID || itemID == d->SubjectHierarchyNode->GetSceneItemID())
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item ID";
     return false;
     }
 
