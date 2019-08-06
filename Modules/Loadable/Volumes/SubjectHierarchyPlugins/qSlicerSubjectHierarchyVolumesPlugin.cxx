@@ -192,7 +192,6 @@ double qSlicerSubjectHierarchyVolumesPlugin::canOwnSubjectHierarchyItem(vtkIdTyp
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return 0.0;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -223,7 +222,6 @@ QString qSlicerSubjectHierarchyVolumesPlugin::tooltip(vtkIdType itemID)const
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return QString("Invalid");
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -263,7 +261,6 @@ QIcon qSlicerSubjectHierarchyVolumesPlugin::icon(vtkIdType itemID)
 
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return QIcon();
     }
 
@@ -297,7 +294,6 @@ void qSlicerSubjectHierarchyVolumesPlugin::setDisplayVisibility(vtkIdType itemID
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -334,7 +330,6 @@ int qSlicerSubjectHierarchyVolumesPlugin::getDisplayVisibility(vtkIdType itemID)
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return -1;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -546,7 +541,6 @@ void qSlicerSubjectHierarchyVolumesPlugin::showVisibilityContextMenuActionsForIt
 
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
     {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return;
     }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
