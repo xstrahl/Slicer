@@ -526,7 +526,6 @@ void qMRMLSubjectHierarchyTreeViewPrivate::setSubjectHierarchyItemVisibility(vtk
   qSlicerSubjectHierarchyAbstractPlugin* ownerPlugin = qSlicerSubjectHierarchyPluginHandler::instance()->getOwnerPluginForSubjectHierarchyItem(itemID);
   if (!ownerPlugin)
   {
-    qCritical() << Q_FUNC_INFO << ": Subject hierarchy item " << itemID << " (named " << this->SubjectHierarchyNode->GetItemName(itemID).c_str() << ") is not owned by any plugin";
     return;
   }
 

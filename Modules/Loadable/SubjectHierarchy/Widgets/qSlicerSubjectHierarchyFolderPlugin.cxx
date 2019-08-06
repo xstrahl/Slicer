@@ -175,7 +175,6 @@ double qSlicerSubjectHierarchyFolderPlugin::canOwnSubjectHierarchyItem(vtkIdType
 {
   if (!itemID)
   {
-    qCritical() << Q_FUNC_INFO << ": Input item is invalid";
     return 0.0;
   }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();

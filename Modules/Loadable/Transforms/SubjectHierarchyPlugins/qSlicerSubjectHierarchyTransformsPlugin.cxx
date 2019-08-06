@@ -556,7 +556,6 @@ double qSlicerSubjectHierarchyTransformsPlugin::canReparentItemInsideSubjectHier
 {
   if (!itemID || !parentItemID)
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return 0.0;
   }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -581,7 +580,6 @@ bool qSlicerSubjectHierarchyTransformsPlugin::reparentItemInsideSubjectHierarchy
 {
   if (!itemID || !parentItemID)
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return false;
   }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -647,7 +645,6 @@ double qSlicerSubjectHierarchyTransformsPlugin::canOwnSubjectHierarchyItem(vtkId
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return 0.0;
   }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -684,7 +681,6 @@ QString qSlicerSubjectHierarchyTransformsPlugin::tooltip(vtkIdType itemID) const
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return QString("Invalid");
   }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -715,7 +711,6 @@ QIcon qSlicerSubjectHierarchyTransformsPlugin::icon(vtkIdType itemID)
 
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return QIcon();
   }
 
@@ -865,7 +860,6 @@ void qSlicerSubjectHierarchyTransformsPlugin::showViewContextMenuActionsForItem(
   d->ViewContextMenuEventData.clear();
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return;
   }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();

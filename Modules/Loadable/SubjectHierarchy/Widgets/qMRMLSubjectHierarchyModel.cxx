@@ -173,7 +173,6 @@ QStandardItem* qMRMLSubjectHierarchyModelPrivate::insertSubjectHierarchyItem(vtk
   {
     if (!parentItemID)
     {
-      qCritical() << Q_FUNC_INFO << ": Unable to get parent for subject hierarchy item with ID " << itemID;
       return nullptr;
     }
     parentItem = q->insertSubjectHierarchyItem(parentItemID);
@@ -695,7 +694,6 @@ bool qMRMLSubjectHierarchyModel::moveToRow(vtkIdType itemID, int newRow)
 
   if (!itemID || itemID == d->SubjectHierarchyNode->GetSceneItemID())
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item ID";
     return false;
   }
 
@@ -1079,8 +1077,6 @@ void qMRMLSubjectHierarchyModel::updateItemDataFromSubjectHierarchyItem(QStandar
   }
   else
   {
-    qDebug() << Q_FUNC_INFO << ": No owner plugin for subject hierarchy item '" << d->subjectHierarchyItemName(shItemID);
-
     // Owner plugin name is not set for subject hierarchy item. Show it as a regular node
     if (column == this->nameColumn())
     {

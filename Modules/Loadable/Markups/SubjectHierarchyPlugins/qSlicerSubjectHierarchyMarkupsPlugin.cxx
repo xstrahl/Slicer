@@ -388,7 +388,6 @@ double qSlicerSubjectHierarchyMarkupsPlugin::canOwnSubjectHierarchyItem(vtkIdTyp
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return 0.0;
   }
   vtkMRMLSubjectHierarchyNode* shNode = qSlicerSubjectHierarchyPluginHandler::instance()->subjectHierarchyNode();
@@ -476,7 +475,6 @@ QIcon qSlicerSubjectHierarchyMarkupsPlugin::icon(vtkIdType itemID)
 {
   if (itemID == vtkMRMLSubjectHierarchyNode::INVALID_ITEM_ID)
   {
-    qCritical() << Q_FUNC_INFO << ": Invalid input item";
     return QIcon();
   }
 
