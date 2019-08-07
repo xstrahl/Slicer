@@ -39,12 +39,23 @@ public:
   /// Set the widget mode. By default, the widget will build its 2D representation
   void SetIs2DWidget(int value);
 
+  /// To allow to enable/disable the point1 and point2 separatly
+  virtual void SetEnabled(int enabled);
+
+  /// Enable/Disable the interaction with the point 1 and/or the point 2.
+  vtkSetMacro(Point1Enabled, bool);
+  vtkGetMacro(Point1Enabled, bool);
+  vtkSetMacro(Point2Enabled, bool);
+  vtkGetMacro(Point2Enabled, bool);
+
 protected:
 
   vtkAnnotationRulerWidget();
   ~vtkAnnotationRulerWidget() override;
 
   bool Is2DWidget;
+  bool Point1Enabled;
+  bool Point2Enabled;
 
 private:
 

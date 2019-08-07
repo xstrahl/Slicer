@@ -213,6 +213,7 @@ vtkAbstractWidget * vtkMRMLAnnotationRulerDisplayableManager::CreateWidget(vtkMR
     dRep->SetHandleRepresentation(handle.GetPointer());
     dRep->InstantiateHandleRepresentation();
 
+
     vtkAxisActor2D *axis = dRep->GetAxis();
     axis->SetNumberOfMinorTicks(0);
     axis->SetTickLength(6);
@@ -643,6 +644,10 @@ void vtkMRMLAnnotationRulerDisplayableManager::PropagateMRMLToWidget(vtkMRMLAnno
 
   // update the position
   this->UpdatePosition(widget, node);
+
+  // Update interaction
+  rulerWidget->SetPoint1Enabled(rulerNode->GetPosition1Enabled());
+  rulerWidget->SetPoint2Enabled(rulerNode->GetPosition2Enabled());
 
   rulerWidget->Modified();
 
