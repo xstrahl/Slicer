@@ -145,6 +145,13 @@ public:
   // Create default storage node or nullptr if does not have one
   vtkMRMLStorageNode* CreateDefaultStorageNode() override;
 
+  // Enable/Disable the interaction with the respective points.
+  // True by default.
+  vtkSetMacro(Position1Enabled, bool);
+  vtkGetMacro(Position1Enabled, bool);
+  vtkSetMacro(Position2Enabled, bool);
+  vtkGetMacro(Position2Enabled, bool);
+
   //  void Initialize(vtkMRMLScene* mrmlScene);
 
   /// Calculate the distance between world coordinates of the two end points
@@ -171,6 +178,8 @@ protected:
   // Description:
   // The format string that defines the text showing the distance
   char* DistanceAnnotationFormat;
+  bool Position1Enabled;
+  bool Position2Enabled;
 
   int SetControlPoint(int id, double newControl[3]);
 
