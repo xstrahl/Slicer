@@ -36,12 +36,8 @@ public:
 
   virtual void init();
 
-  // Widget returned from createViewFromXML
-  QWidget* Widget;
-  // Tag used for widget in createViewFromXML
+  QSharedPointer<QWidget> Widget;
   QString TagName;
-  // Internal QWidget used to hold the widget until it is taken over by the layout manager
-  QSharedPointer<QWidget> InternalWidget;
 
 protected:
   qSlicerSingletonViewFactory* q_ptr;
@@ -53,17 +49,12 @@ protected:
 qSlicerSingletonViewFactoryPrivate
 ::qSlicerSingletonViewFactoryPrivate(qSlicerSingletonViewFactory& object)
   : q_ptr(&object)
-  , Widget(nullptr)
-  , InternalWidget(new QWidget())
 {
 }
 
 //-----------------------------------------------------------------------------
 qSlicerSingletonViewFactoryPrivate::~qSlicerSingletonViewFactoryPrivate()
-{
-  Q_Q(qSlicerSingletonViewFactory);
-  q->setWidget(nullptr);
-}
+= default;
 
 //-----------------------------------------------------------------------------
 void qSlicerSingletonViewFactoryPrivate::init()
@@ -87,39 +78,19 @@ qSlicerSingletonViewFactory::qSlicerSingletonViewFactory(QObject* parent)
 qSlicerSingletonViewFactory::~qSlicerSingletonViewFactory()
 = default;
 
+
 //-----------------------------------------------------------------------------
 QWidget* qSlicerSingletonViewFactory::widget()
 {
   Q_D(qSlicerSingletonViewFactory);
-  return d->Widget;
+  return d->Widget.data();
 }
 
 //-----------------------------------------------------------------------------
 void qSlicerSingletonViewFactory::setWidget(QWidget* widget)
 {
   Q_D(qSlicerSingletonViewFactory);
-  if (d->Widget == widget)
-    {
-    return;
-    }
-
-  if (d->Widget)
-    {
-    QObject::disconnect(d->Widget, &QWidget::destroyed, this, &qSlicerSingletonViewFactory::onWidgetDestroyed);
-    }
-
-  d->Widget = widget;
-  if (d->Widget)
-    {
-    d->Widget->setParent(d->InternalWidget.data()); // Hold the widget in the internal widget until the layout manager can take it
-    QObject::connect(d->Widget, &QWidget::destroyed, this, &qSlicerSingletonViewFactory::onWidgetDestroyed);
-    }
-}
-
-//-----------------------------------------------------------------------------
-void qSlicerSingletonViewFactory::onWidgetDestroyed()
-{
-  this->setWidget(nullptr);
+  d->Widget = QSharedPointer<QWidget>(widget);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,7 +119,7 @@ QWidget* qSlicerSingletonViewFactory::createViewFromXML(QDomElement layoutElemen
 {
   Q_UNUSED(layoutElement);
   Q_D(qSlicerSingletonViewFactory);
-  if (d->Widget && d->Widget->isVisible())
+  if (this->widget()->isVisible())
     {
     qCritical() << "qSlicerSingletonViewFactory::createViewFromXML - Widget for view \"" << d->TagName << "\" is already in use within the current layout!";
     }
