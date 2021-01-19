@@ -27,13 +27,13 @@ if(NOT DEFINED ITK_DIR AND NOT Slicer_USE_SYSTEM_${proj})
 
   ExternalProject_SetIfNotDefined(
     Slicer_${proj}_GIT_REPOSITORY
-    "${EP_GIT_PROTOCOL}://github.com/InsightSoftwareConsortium/ITK"
+    "${EP_GIT_PROTOCOL}://github.com/xstrahl/ITK"
     QUIET
     )
 
   ExternalProject_SetIfNotDefined(
     Slicer_${proj}_GIT_TAG
-    "ff48670261e3bd16ee1c6f5494834f65183a98dd" # pre-v5.1b01 (2019-08-26)
+    "ee21a0de4eb0a73d21a9f12b0ced46e2515a2683" # pre-v5.1b01 (2019-08-26) / muriplan-v5.1.0-2019-08-26-ff4867026
     QUIET
     )
 
