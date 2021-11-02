@@ -351,7 +351,7 @@ class SlicerExtensionBuildSystemTest(unittest.TestCase):
       description_file.write(textwrap.dedent(
         """
         scm git
-        scmurl git://github.com/Slicer/ExtensionThatDoNotExists
+        scmurl https://github.com/Slicer/ExtensionThatDoNotExists
         scmrevision abcdefg
         depends TestExtA TestExtB TestExtC
         """))
@@ -427,7 +427,7 @@ set(CTEST_SVN_COMMAND "{svn_executable}")
 set(EXTENSIONS_TRACK_QUALIFIER "master") # "master", 4.4, ...
 set(EXTENSIONS_INDEX_GIT_TAG "origin/${{EXTENSIONS_TRACK_QUALIFIER}}") # origin/master, origin/4.4, ...
 
-set(EXTENSIONS_INDEX_GIT_REPOSITORY git://github.com/jcfr/ExtensionsIndex.git)
+set(EXTENSIONS_INDEX_GIT_REPOSITORY https://github.com/jcfr/ExtensionsIndex.git)
 
 set(BUILD_OPTIONS_STRING "${{MY_BITNESS}}bits-QT${{MY_QT_VERSION}}-PythonQt-With-Tcl-CLI")
 

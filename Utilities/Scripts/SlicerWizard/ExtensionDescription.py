@@ -159,7 +159,7 @@ class ExtensionDescription(object):
   def _remotePublicUrl(remote):
     url = remote.url
     if url.startswith("git@"):
-      return url.replace(":", "/").replace("git@", "git://")
+      return url.replace(":", "/").replace("git@", "https://")
 
     return url
 
