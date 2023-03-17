@@ -33,7 +33,7 @@ if(NOT DEFINED ITK_DIR AND NOT Slicer_USE_SYSTEM_${proj})
 
   ExternalProject_SetIfNotDefined(
     Slicer_${proj}_GIT_TAG
-    "ee21a0de4eb0a73d21a9f12b0ced46e2515a2683" # pre-v5.1b01 (2019-08-26) / muriplan-v5.1.0-2019-08-26-ff4867026
+    "c11bbb879eee160391806e07ee2f6f5925f92e91" # pre-v5.1b01 (2019-08-26) / muriplan-v5.1.0-2019-08-26-ff4867026
     QUIET
     )
 
