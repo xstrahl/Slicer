@@ -53,11 +53,11 @@ if((NOT DEFINED PYTHON_INCLUDE_DIR
    OR NOT DEFINED PYTHON_LIBRARY
    OR NOT DEFINED PYTHON_EXECUTABLE) AND NOT Slicer_USE_SYSTEM_${proj})
 
-  set(python_SOURCE_DIR "${CMAKE_BINARY_DIR}/Python-3.6.7")
+  set(python_SOURCE_DIR "${CMAKE_BINARY_DIR}/Python-3.6.15")
 
   ExternalProject_Add(python-source
-    URL "https://www.python.org/ftp/python/3.6.7/Python-3.6.7.tgz"
-    URL_MD5 "c83551d83bf015134b4b2249213f3f85"
+    URL "https://www.python.org/ftp/python/3.6.15/Python-3.6.15.tgz"
+    URL_MD5 "f9e6f91c754a604f4fc6f6c7683723fb"
     DOWNLOAD_DIR ${CMAKE_BINARY_DIR}
     SOURCE_DIR ${python_SOURCE_DIR}
     CONFIGURE_COMMAND ""
@@ -128,7 +128,7 @@ if((NOT DEFINED PYTHON_INCLUDE_DIR
 
   ExternalProject_SetIfNotDefined(
     Slicer_${proj}_GIT_TAG
-    "274bfe64582ffba0e489acfce8d2d5b05bdd1738"
+    "48ce7daa6bbecd91bccc4100a5e1d699163a38fe"
     QUIET
     )
 
